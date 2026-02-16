@@ -1,18 +1,15 @@
-name: Terraform Deploy
+name: Deploy with Terraform
 
 on:
   workflow_dispatch:
-    inputs:
-      image_tag:
-        description: "Docker Image Tag"
-        required: true
 
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -22,8 +19,12 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="image_tag=${{ github.event.inputs.image_tag }}"
+        run: terraform apply -auto-approve \
+          -var="image_tag=${{ github.sha }}" \
+          -var="docker_username=${{ secrets.DOCKER_USERNAME }}" \
+          -var="key_name=${{ secrets.AWS_KEY_NAME }}"
         working-directory: terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
