@@ -1,16 +1,16 @@
 resource "aws_security_group" "strapi_sg" {
-  name = "strapi-sg"
+  name = "strapi-security-group"
 
   ingress {
-    from_port   = 22
-    to_port     = 22
+    from_port   = 1337
+    to_port     = 1337
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port   = 1337
-    to_port     = 1337
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -24,7 +24,7 @@ resource "aws_security_group" "strapi_sg" {
 }
 
 resource "aws_instance" "strapi_ec2" {
-  ami           = "ami-03f4878755434977f"
+  ami           = "ami-03f4878755434977f" # Amazon Linux 2 in ap-south-1
   instance_type = "t2.micro"
   key_name      = var.key_name
 
